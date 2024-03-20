@@ -25,7 +25,6 @@ newtype Eval a = Eval { getEval :: ReaderT Env IO a}
 newtype FunWrapper = FunWrapper { getFun :: [CrispVal] -> Eval CrispVal}
 
 instance Eq FunWrapper where 
-    (==) :: FunWrapper -> FunWrapper -> Bool
     (==) _ _ = False 
 
 -- Used in the internal representation of the code
@@ -69,7 +68,6 @@ showException exp = case exp of
 instance Exception CrispException
 
 instance Show CrispException where 
-    show :: CrispException -> String
     show = T.unpack . showException 
 
 
