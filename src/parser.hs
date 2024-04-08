@@ -48,6 +48,7 @@ identifier = try (do
                 ) <|> specialIdentifiers
 
 -- Parse integers
+signedInteger :: Parser Integer
 signedInteger = try $ L.signed (return ()) L.decimal
 
 -- Parse empty list
@@ -85,7 +86,9 @@ contents :: Parser a -> Parser a
 contents x = space *> lexeme x <* eof 
 
 -- read code from string
+readCode :: T.Text -> Either (ParseErrorBundle T.Text Void) CrispVal
 readCode = parse (contents crispVal) "<stdin>"
 
 -- read code from file
+readCodeFromFile :: String -> T.Text -> Either (ParseErrorBundle T.Text Void) CrispVal
 readCodeFromFile = parse (contents (List <$> manyCrispVal))
