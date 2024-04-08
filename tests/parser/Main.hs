@@ -39,24 +39,38 @@ main = do
         it "Nil" $
             readCode "'()" `shouldBe` Right Nil
 
-        it "S-expr homolist 1" $
+        it "S-expr: homolist 1" $
             readCode "(1 2 4)" `shouldBe` 
                 Right (List [Number 1, Number 2, Number 4])
         
-        it "S-expr homolist 2" $
+        it "S-expr: homolist 2" $
             readCode "(+1 2 -4)" `shouldBe` 
                 Right (List [Number 1, Number 2, Number (-4)])
         
-        it "S-expr homolist 3" $
+        it "S-expr: homolist 3" $
             readCode "(\"a\" \"b\" \"chia+\")" `shouldBe` 
                 Right (List [String "a", String "b", String "chia+"])
 
-        it "S-expr homolist quoted" $
+        it "S-expr: homolist quoted" $
             readCode "'(\"a\" \"b\" \"chia+\")" `shouldBe` 
                 Right (List [Atom "quote", List [String "a", String "b", String "chia+"]])
 
-        it "S-expr heterolist 1" $
-            readCode "(1 2 4)" `shouldBe` 
-                Right (List [Number 1, Number 2, Number 4])
+        it "S-expr: heterolist 1" $
+            readCode "(1 2 haha \"str\")" `shouldBe` 
+                Right (List [Number 1, Number 2, Atom "haha", String "str"])
         
-        
+        it "S-expr: single integer" $ 
+            readCode "(-42)"  `shouldBe` Right (List [Number (-42)])
+
+        it "S-expr: (- n)" $ 
+            readCode "(- 42)"  `shouldBe` Right (List [Atom "-", Number (42)])
+
+        it "S-expr: operator call" $ 
+            readCode "(- -42 +42)"  `shouldBe` Right (List [Atom "-", Number (-42), Number 42])
+
+        it "S-expr: operal call with atoms" $ 
+            readCode "(- me you)"  `shouldBe` Right (List [Atom "-", Atom "me", Atom "you"])
+
+        it "S-expr: nested list 1" $ 
+            readCode "(let (x 20) (+ y x))"  `shouldBe` 
+                Right (List [Atom "let", List [Atom "x", Number 20], List [Atom "+", Atom "y", Atom "x"]])

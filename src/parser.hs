@@ -47,7 +47,7 @@ identifier = try (do
                     return (singleton start <> T.pack rest)
                 ) <|> specialIdentifiers
 
--- -- parsing integers
+-- Parse integers
 signedInteger = try $ L.signed (return ()) L.decimal
 
 -- Parse empty list
@@ -59,10 +59,11 @@ boolean :: Parser CrispVal
 boolean = string "False" $> Bool False
         <|> string "True" $> Bool True
 
+-- Parse string literals
 stringLiteral :: Parser String
 stringLiteral = char '"' >> manyTill L.charLiteral (char '"')
 
--- Parser CrispVals
+-- Parse CrispVals
 crispVal :: Parser CrispVal 
 crispVal = boolean 
         <|> Nil <$ nil 
@@ -72,10 +73,11 @@ crispVal = boolean
         <|> quoted1 <$> quoted crispVal
         <|> List <$> parenthesizedExpr manyCrispVal
 
+-- Parse quoted val
 quoted1 :: CrispVal -> CrispVal
 quoted1 x = List [Atom "quote", x]
 
--- Parser multiple CrispVals separated by whitespace
+-- Parse multiple CrispVals separated by whitespace
 manyCrispVal :: Parser [CrispVal]
 manyCrispVal = crispVal `sepBy` space1
 
@@ -85,6 +87,5 @@ contents x = space *> lexeme x <* eof
 -- read code from string
 readCode = parse (contents crispVal) "<stdin>"
 
--- -- read code from file
--- readCodeFromFile :: String -> Text -> Either (ParseEr)
+-- read code from file
 readCodeFromFile = parse (contents (List <$> manyCrispVal))

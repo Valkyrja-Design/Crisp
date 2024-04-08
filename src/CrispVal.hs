@@ -14,8 +14,15 @@ import qualified Data.Map as Map
 import Control.Monad.Reader
 import Control.Exception
 
+-- Env for variables and functions
+type VarEnv = Map.Map T.Text CrispVal 
+type FuncEnv = Map.Map T.Text CrispVal
+
 -- Environment in which evaluation happens
-type Env = Map.Map T.Text CrispVal
+data Env = Env {
+    vEnv :: VarEnv,
+    fEnv :: FuncEnv
+} deriving (Eq)
 
 -- Evaluation monad transformer with Reader (Env) and IO
 newtype Eval a = Eval { getEval :: ReaderT Env IO a}
@@ -59,12 +66,14 @@ instance Show CrispVal where
 
 -- For exceptions
 data CrispException = NumOfArgs Integer [CrispVal]
+                    | InvalidArgument [T.Text] [CrispVal]
+
 
 -- Printing exception
 showException :: CrispException -> T.Text
 showException exp = case exp of 
-                        (NumOfArgs n args) -> "exception"
-
+                        (NumOfArgs n args) -> T.concat ["Invalid number of arguments, expected: ", T.pack $ show n, " found: ", T.pack . show . Prelude.length $ args]
+                        (InvalidArgument expected args) -> T.concat ["Invalid argument, expected: ", T.unwords expected, " found: ", T.unwords $ toString <$> args]
 instance Exception CrispException
 
 instance Show CrispException where 
