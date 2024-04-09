@@ -5,8 +5,9 @@ module CrispVal (
     CrispVal(..),
     Eval(..),
     FunWrapper(..),
-    Env,
-    CrispException(..)
+    Env(..),
+    CrispException(..),
+    toString
 ) where 
 
 import Data.Text as T
@@ -67,13 +68,19 @@ instance Show CrispVal where
 -- For exceptions
 data CrispException = NumOfArgs Integer [CrispVal]
                     | InvalidArgument [T.Text] [CrispVal]
-
+                    | ParseError String
+                    | UnboundVar T.Text
+                    | Default T.Text
 
 -- Printing exception
 showException :: CrispException -> T.Text
 showException exp = case exp of 
                         (NumOfArgs n args) -> T.concat ["Invalid number of arguments, expected: ", T.pack $ show n, " found: ", T.pack . show . Prelude.length $ args]
                         (InvalidArgument expected args) -> T.concat ["Invalid argument, expected: ", T.unwords expected, " found: ", T.unwords $ toString <$> args]
+                        (ParseError err) -> T.concat ["Error while parsing: ", T.pack err]
+                        (UnboundVar var) -> T.concat ["Unbound variable: ", var]
+                        (Default err) -> T.concat ["Error: ", err]
+
 instance Exception CrispException
 
 instance Show CrispException where 

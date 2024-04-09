@@ -68,7 +68,7 @@ main = do
         it "S-expr: operator call" $ 
             readCode "(- -42 +42)"  `shouldBe` Right (List [Atom "-", Number (-42), Number 42])
 
-        it "S-expr: operal call with atoms" $ 
+        it "S-expr: operator call with atoms" $ 
             readCode "(- me you)"  `shouldBe` Right (List [Atom "-", Atom "me", Atom "you"])
 
         it "S-expr: nested list 1" $ 

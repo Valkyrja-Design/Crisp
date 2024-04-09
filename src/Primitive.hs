@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Primitive (primEnv) where 
+module Primitive (primEnv, applyUnary) where 
 
 import CrispVal (
         CrispException(NumOfArgs, InvalidArgument),
