@@ -1,4 +1,4 @@
-module Main where
+import REPL (replLoop)
 
 main :: IO ()
-main = putStrLn "Hello, Haskell!"
+main = replLoop
