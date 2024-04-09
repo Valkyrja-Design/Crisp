@@ -37,7 +37,14 @@ quoted :: Parser a -> Parser a
 quoted x = try (char '\'') *> x
 
 specialIdentifiers :: Parser Text
-specialIdentifiers = string "-" <|> string "+" <|> string "..."
+specialIdentifiers = string "-" 
+                <|> string "+"
+                <|> string "*" 
+                <|> string "=="
+                <|> string "<"
+                <|> string "<=" 
+                <|> string ">" 
+                <|> string ">=" 
 
 -- Identifiers start with a letter and then zero or more of alphanumeric
 identifier :: Parser Text

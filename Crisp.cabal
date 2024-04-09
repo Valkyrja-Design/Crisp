@@ -70,7 +70,8 @@ executable Crisp
         text,
         containers,
         mtl,
-        hspec
+        hspec,
+        haskeline
 
 
     -- Directories containing source files.

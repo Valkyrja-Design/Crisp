@@ -1,8 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Eval (
-
+    evalText,
+    evalFile,
+    safeExec,
+    runParseTest
 ) where
 
 import Primitive (primEnv, applyUnary)
@@ -42,6 +46,17 @@ funcEnv = Map.fromList $ primEnv <> []
 basicEnv :: Env
 basicEnv = Env Map.empty funcEnv
 
+-- for REPL so that it doesn't stop on exceptions
+safeExec :: IO a -> IO (Either String a)
+safeExec m = do 
+    res <- Control.Exception.try m 
+    case res of 
+        Left (exp :: SomeException) ->
+            case fromException exp of 
+                Just (enclosed :: CrispException) -> return $ Left (show enclosed)
+                Nothing -> return $ Left (show exp)
+        Right val -> return $ Right val
+
 -- run the code in the given environment
 runInEnv :: Env -> Eval a -> IO a
 runInEnv env code = runReaderT (getEval code) env
@@ -58,6 +73,16 @@ fileToEval path contents = either (throw . ParseError . show) evalBody $ readCod
 -- parse and return the AST as a String
 runParseTest :: T.Text -> T.Text
 runParseTest expr = either (T.pack . show) (T.pack . show) $ readCode expr
+
+-- convert text to be evaluated
+textToEval :: T.Text -> Eval CrispVal
+textToEval expr = either (throw . ParseError . show) evalBody $ readCode expr
+
+-- evaluate from text (for REPL)
+evalText :: T.Text -> IO ()
+evalText expr = do 
+    res <- runInEnv basicEnv $ textToEval expr
+    print res
 
 -- fetch the bound value of the given variable in the current env
 fetchVar :: CrispVal -> Eval CrispVal
