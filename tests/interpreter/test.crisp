@@ -1,4 +1,5 @@
 (+ 20 20 20)
 (- 10 10)
 (* 1 2 3 4)
+(if (&& (<= 3 4) (== 2 5)) "true" "false")
 (let (fact (lambda (x fact) (if (== x 0) 1 (* x (fact (- x 1) fact))))) (fact 5 fact))

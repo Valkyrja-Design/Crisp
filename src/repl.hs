@@ -20,7 +20,7 @@ process s = do
 
 repl :: REPL ()
 repl = do
-    input <- getInputLine "crisp>"
+    input <- getInputLine "crisp> "
     case input of 
         Nothing -> outputStrLn "Sayonara"
         Just x -> liftIO (process x) >> repl
