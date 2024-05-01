@@ -19,7 +19,7 @@ type Parser = Parsec Void Text
 
 -- Consumes whitespace and comments
 spaceConsumer :: Parser ()
-spaceConsumer = L.space space1 (L.skipLineComment "--") (L.skipBlockCommentNested "{-" "-}")
+spaceConsumer = L.space space1 (L.skipLineComment "//") (L.skipBlockCommentNested "/*" "*/")
 
 -- Automatically consume trailing spaces after a lexeme
 lexeme = L.lexeme spaceConsumer

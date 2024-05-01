@@ -1,0 +1,10 @@
+(begin
+    (define y 1)
+    (define add (lambda (x) (+ x y)))
+    (let (y 10) (add y))
+)
+// begin separates env
+(begin
+    (define foo (lambda (x) y))
+    (let (y 42) (foo 0))
+)
