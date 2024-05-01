@@ -1,4 +1,4 @@
 #!/bin/bash 
 
-cabal build
+cabal build Crisp
 cabal exec Crisp -- -r

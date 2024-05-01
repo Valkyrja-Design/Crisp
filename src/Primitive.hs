@@ -41,6 +41,7 @@ primEnv :: PrimtiveFunctions
 primEnv = [
         ("+", buildFunction $ foldBinary (applyBinaryNumeric (+)) (Number 0)),
         ("*", buildFunction $ foldBinary (applyBinaryNumeric (*)) (Number 1)),
+        ("/", buildFunction $ applyBinary $ applyBinaryNumeric div),
         ("++", buildFunction $ foldBinary (applyBinaryString (<>)) (String "")),
         ("-", buildFunction $ applyBinary $ applyBinaryNumeric (-)),
         ("<", buildFunction $ applyBinary $ applyNumericComparator (<)),
@@ -48,10 +49,11 @@ primEnv = [
         (">", buildFunction $ applyBinary $ applyNumericComparator (>)),
         (">=", buildFunction $ applyBinary $ applyNumericComparator (>=)),
         ("==", buildFunction $ applyBinary $ applyNumericComparator (==)),
+        ("!=", buildFunction $ applyBinary $ applyNumericComparator (/=)),
         ("&&", buildFunction $ foldBinary (applyBoolean (&&)) (Bool True)),
         ("||", buildFunction $ foldBinary (applyBoolean (||)) (Bool False)),
         ("!", buildFunction $ applyUnary applyNegation),
-        ("construct", buildFunction construct),
+        ("ctor", buildFunction ctor),
         ("head", buildFunction Primitive.head),
         ("tail", buildFunction Primitive.tail)   
     ]
@@ -97,10 +99,10 @@ applyNegation arg = throw $ InvalidArgument ["boolean"] [arg]
 
 -- functions for list manipulation
 -- construct list
-construct :: [CrispVal] -> Eval CrispVal
-construct [x, List y] = return . List $ x:y
-construct [x, y] = return . List $ [x, y]
-construct arg = throw $ InvalidArgument ["list"] [List arg]
+ctor :: [CrispVal] -> Eval CrispVal
+ctor [x, List y] = return . List $ x:y
+ctor [x, y] = return . List $ [x, y]
+ctor arg = throw $ InvalidArgument ["list"] [List arg]
 
 -- returns the head of the list
 head :: [CrispVal] -> Eval CrispVal

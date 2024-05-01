@@ -26,8 +26,9 @@ lexeme = L.lexeme spaceConsumer
 
 -- Expression enclosed in ()
 parenthesizedExpr :: Parser a -> Parser a 
-parenthesizedExpr p = try $ do 
+parenthesizedExpr p = do 
                         _ <- char '('
+                        spaceConsumer
                         val <- p 
                         _ <- char ')'
                         return val
@@ -38,12 +39,15 @@ quoted x = try (char '\'') *> x
 
 specialIdentifiers :: Parser Text
 specialIdentifiers = string "-" 
+                <|> string "++"
                 <|> string "+"
-                <|> string "*" 
+                <|> string "*"
+                <|> string "/" 
                 <|> string "<=" 
                 <|> string "<"
                 <|> string ">=" 
                 <|> string ">" 
+                <|> string "!="
                 <|> string "=="
                 <|> string "&&"
                 <|> string "||"
@@ -75,11 +79,11 @@ stringLiteral = char '"' >> manyTill L.charLiteral (char '"')
 
 -- Parse CrispVals
 crispVal :: Parser CrispVal 
-crispVal = boolean 
+crispVal = lexeme $ boolean 
         <|> Nil <$ nil 
         <|> Number <$> signedInteger
         <|> Atom <$> identifier
-        <|> String <$> T.pack <$> stringLiteral
+        <|> String . T.pack <$> stringLiteral
         <|> quoted1 <$> quoted crispVal
         <|> List <$> parenthesizedExpr manyCrispVal
 

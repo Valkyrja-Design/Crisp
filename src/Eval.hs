@@ -224,7 +224,7 @@ eval (List [Atom "lambda", List params, expr]) =
         asks (Lambda (FunWrapper $ applyLambda expr params))
 eval (List ((Atom "lambda") : _)) = throw $ Default "Invalid syntax for lambda function, expected: \n\t(lambda <params> <expr>)"
 
-eval val@(List (x : xs)) = 
+eval (List (x : xs)) = 
     do
         -- liftIO $ print val
         Env{..} <- ask

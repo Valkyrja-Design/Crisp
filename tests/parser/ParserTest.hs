@@ -1,12 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module ParserTest (main) where
-
 import CrispVal ( CrispVal(String, Nil, Atom, List, Bool, Number) )
 import Parser ( readCode )
-
-import qualified Data.Text as T 
-import Data.Text (Text)
 
 import Test.Hspec (hspec, describe, it, shouldBe)
 
@@ -31,10 +26,10 @@ main = do
                 Right (String "This is a string")
 
         it "Bool True" $
-            readCode "True" `shouldBe` Right (Bool True)
+            readCode "true" `shouldBe` Right (Bool True)
 
         it "Bool False" $
-            readCode "False" `shouldBe` Right (Bool False)
+            readCode "false" `shouldBe` Right (Bool False)
 
         it "Nil" $
             readCode "'()" `shouldBe` Right Nil

@@ -1,0 +1,2 @@
+(define append (lambda (x) (++ x "world")))
+(append "hello ")
