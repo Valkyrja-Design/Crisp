@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Main (main) where
+module ParserTest (main) where
 
 import CrispVal ( CrispVal(String, Nil, Atom, List, Bool, Number) )
 import Parser ( readCode )

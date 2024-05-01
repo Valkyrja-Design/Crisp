@@ -76,7 +76,9 @@ executable Crisp
         containers,
         mtl,
         hspec,
-        haskeline
+        haskeline,
+        directory,
+        optparse-applicative
 
 
     -- Directories containing source files.

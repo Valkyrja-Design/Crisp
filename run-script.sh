@@ -1,4 +1,4 @@
 #!/bin/bash
 
 cabal build 
-cabal run Crisp
+cabal exec Crisp -- -s $@

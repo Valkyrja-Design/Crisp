@@ -66,8 +66,8 @@ nil = try (char '\'' *> string "()") *> return () <?> "nil"
 
 -- Parse booleans
 boolean :: Parser CrispVal 
-boolean = string "False" $> Bool False
-        <|> string "True" $> Bool True
+boolean = string "false" $> Bool False
+        <|> string "true" $> Bool True
 
 -- Parse string literals
 stringLiteral :: Parser String
@@ -89,10 +89,10 @@ quoted1 x = List [Atom "quote", x]
 
 -- Parse multiple CrispVals separated by whitespace
 manyCrispVal :: Parser [CrispVal]
-manyCrispVal = crispVal `sepBy` space1
+manyCrispVal = crispVal `sepBy` spaceConsumer
 
 contents :: Parser a -> Parser a 
-contents x = space *> lexeme x <* eof 
+contents x = spaceConsumer *> lexeme x <* eof 
 
 -- read code from string
 readCode :: T.Text -> Either (ParseErrorBundle T.Text Void) CrispVal

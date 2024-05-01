@@ -1,3 +1,4 @@
 #!/bin/bash 
 
-cabal repl
+cabal build
+cabal exec Crisp -- -r
