@@ -26,7 +26,7 @@ lexeme = L.lexeme spaceConsumer
 
 -- Expression enclosed in ()
 parenthesizedExpr :: Parser a -> Parser a 
-parenthesizedExpr p = do 
+parenthesizedExpr p = try $ do 
                         _ <- char '('
                         spaceConsumer
                         val <- p 

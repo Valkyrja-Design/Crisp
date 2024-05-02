@@ -58,7 +58,6 @@ toString val = case val of
                     Lambda _ _ -> "(lambda function)"
                     (Bool b) -> T.pack $ show b
 
-
 toStringList :: [CrispVal] -> T.Text 
 toStringList = T.unwords . Prelude.map toString
 
