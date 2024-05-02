@@ -16,7 +16,6 @@ import Data.Text as T
 import Data.Functor
 import qualified Text.Megaparsec.Char.Lexer as L
 import System.Exit (exitSuccess)
-import Parser (readCode)
 
 -- REPL Parser
 
@@ -30,12 +29,16 @@ spaceConsumer = L.space space1 (L.skipLineComment "//") (L.skipBlockCommentNeste
 lexeme = L.lexeme spaceConsumer
 
 -- Options provided: ":ast" ":quit"
-data Option = Quit | Run T.Text
+data Option = Quit | Help | Run T.Text
             deriving (Show)
 
 quit :: Parser Option
 quit = (try $ string ":quit"
         <|> string ":q") $> Quit
+
+help :: Parser Option
+help = (try $ string ":help"
+        <|> string ":h") $> Help
 
 -- run expr
 runExpr :: Parser Option
@@ -46,6 +49,7 @@ runExpr = try $ do
 -- parse options
 options :: Parser Option
 options = quit
+        <|> help
         <|> runExpr
 
 contents :: Parser a -> Parser a
@@ -57,14 +61,18 @@ readREPLLine = parse (contents options) "<stdin>"
 -- REPL
 type REPL a = InputT IO a
 
+helpMessage :: String
+helpMessage = "Usage: [options] expression\n\nwhere options include:\n\t:quit | :q\t\tquit REPL\n\t:help | :h\t\tshow this message"
+
 process :: String -> IO ()
 process s = do
     let line = readREPLLine . T.pack $ s
     case line of 
-        Left _ -> putStrLn "Usage: [options] expression\nwhere options include:\n\t:quit\t\tquit REPL"
+        Left _ -> putStrLn helpMessage
         Right opt -> 
             case opt of 
                 Quit -> exitSuccess
+                Help -> putStrLn helpMessage
                 Run expr -> do
                     res <- safeExec . evalText $ expr
                     either putStrLn return res
