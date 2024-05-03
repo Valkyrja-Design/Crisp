@@ -56,7 +56,7 @@ funcEnv = Map.fromList $ primEnv <> [
     ("read", Fun . FunWrapper $ applyUnary readFunc),
     ("parse", Fun . FunWrapper $ applyUnary parseFunc),
     ("eval", Fun . FunWrapper $ applyUnary eval),
-    ("show", Fun . FunWrapper $ applyUnary (return . String . toString))]
+    ("show", Fun . FunWrapper $ applyUnary (return . (putStrLn) . toString))]
 
 -- whole enviroment
 basicEnv :: Env
@@ -223,6 +223,13 @@ eval (List [Atom "lambda", List params, expr]) =
     do 
         asks (Lambda (FunWrapper $ applyLambda expr params))
 eval (List ((Atom "lambda") : _)) = throw $ Default "Invalid syntax for lambda function, expected: \n\t(lambda <params> <expr>)"
+
+-- -- for loop
+-- eval (List [Atom "for", 
+--             List [Atom "define", Atom var, def],
+--             pred,
+--             inc,
+--             expr]) = return
 
 eval (List (x : xs)) = 
     do

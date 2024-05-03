@@ -1,5 +1,6 @@
 (begin
     (define y 1)
+    (show (+ 2 2))
     (define add (lambda (x) (+ x y)))
     (let (y 10) (add y))
 )

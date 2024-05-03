@@ -1,6 +1,12 @@
 # Build Instructions
 
-Run `cabal build Crisp` to build the project. The program allows for two modes of execution, either a script or a REPL. A script can be executed by
+Run `cabal build Crisp` to build the project. The program allows for two modes of execution, either a script or a REPL. A script can be executed by using 
+
+```
+./run-script.sh <script>
+```
+
+or 
 
 ```
 cabal exec Crisp -- -s <script>
@@ -9,12 +15,18 @@ cabal exec Crisp -- -s <script>
 While the REPL can be launched by
 
 ```
+./run-repl.sh
+```
+
+or 
+
+```
 cabal exec Crisp -- -r
 ```
 
 # Documentation
 
-The language uses [S-expressions](https://en.wikipedia.org/wiki/S-expression) to represent to represent the code. The features include
+The language uses [S-expressions](https://en.wikipedia.org/wiki/S-expression) to represent to represent the code. A program is a series of valid S-expressions and its result is the result of the last S-expression. The features we've implemented include
 
 ## In-built functions
 
@@ -90,5 +102,63 @@ Just your regular if statement which evaluates to `true_expr` if `cond` evaluate
 ## Comments
 
 We've used C-style comments i.e., single line comments start with `//` and multi-line comments are enclosed in `/* ... */`
+
+# Examples
+
+```
+(define append (lambda (x) (++ x "world")))
+(append "hello ")
+
+// output: "hello world"
+```
+
+```
+(&& (< 1 2) (|| (>= 3 4) (== 4 4) (!= 2 3)) true)
+
+// output: True
+```
+
+```
+(define x 2)
+(define y (* x 3))
+(+ x y (/ 5 -3))
+
+// output: 6
+```
+
+```
+// recursive function
+(define fact (lambda (x f) (if (== x 0) 1 (* x (f (- x 1) f)))))
+(fact 5 fact)
+
+// output: 120
+```
+
+```
+(begin
+    (define y 1)
+    (define add (lambda (x) (+ x y)))
+    (let (y 10) (add y))
+)
+
+// output: 11
+```
+
+```
+(begin
+    (define y 1)
+    (define add (lambda (x) (+ x y)))
+    (let (y 10) (add y))
+)
+// begin separates env
+(begin
+    (define foo (lambda (x) y))
+    (let (y 42) (foo 0))
+)
+
+// output: Crisp: Unbound variable: y
+```
+
+
 
 
